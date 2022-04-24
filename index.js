@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
+import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
 
 // import structuredClone from "@ungap/structured-clone"
 
@@ -37,32 +37,48 @@ function loadMeshObj(file, objColor, scale = [1,1,1], pos, ka, kd, ks) {
             });
 
             object.name = (scene.primitives + 3).toString();
-            object.scale['x'] = scale[0]
-            object.scale['y'] = scale[0]
-            object.scale['z'] = scale[0]
-            object.position['x'] = pos[0]
-            object.position['y'] = pos[1]
-            object.position['z'] = pos[2]
-            
             scene.add(object)
-
-            // let shape = new Shape()
-            // object.copy(shape,true) 
-            // console.log(shape)
-            // scene.add(shape);
-
+            scene.primitives += 1;
         },
     );
-    scene.primitives += 1;
+    // scene.primitives += 1;
 }
 
-loadMeshObj('./objects/sphere.obj', 0x00ff00, [1,1,1],[-1,1,0],0.4,0.4,0.4);
+document.addEventListener('keydown', function (event) {
+	console.log("Key pressed = ", event.key);
+	if(event.key == "/") {
+        let s = scene.getObjectByName("3")
+        // s.position['x'] += 2
+        // console.log(s.position)
+        let shape = new Shape()
+        // s.position.set(1,1,0)
+        // console.log(s)
+        // scene.getObjectByName("3").copy(shape)
+        // shape.position['x'] = s.position['x']
+        // shape.position['y'] = s.position['y']
+        // shape.position['z'] = s.position['z']
+        shape.name = s.name
+        shape.position['x'] = 1.5
+        shape.position['y'] = 1.5
+        shape.position['z'] = 1.5
+        scene.remove(scene.getObjectByName("3"))
+        console.log(shape)
+        scene.add(shape);
+    
+	}
+
+
+}, false);
+
+loadMeshObj('./objects/sphere.obj', 0x00ff00, [0.5,0.5,0.5],[-1,1,0],0.4,0.4,0.4);
 
 // const clone = JSON.parse(JSON.stringify(camera))
 
-let light = new THREE.AmbientLight(0xffffff)
-light.name = "light"
-scene.add(light)
+// let light = new THREE.AmbientLight(0xffffff)
+// light.name = "light"
+// scene.add(light)
+
+scene.addLight("l3")
 
 
 function animate() {
