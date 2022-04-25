@@ -19,7 +19,7 @@ scene.background = new THREE.Color(0xe5e5e5);
 let loader = new OBJLoader();
 
 
-function loadMeshObj(file, objColor, scale = [1,1,1], pos, ka, kd, ks) {
+function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] ) {
 
     loader.load(
         // resource URL
@@ -37,6 +37,16 @@ function loadMeshObj(file, objColor, scale = [1,1,1], pos, ka, kd, ks) {
             });
 
             object.name = (scene.primitives + 3).toString();
+            object.position['x'] = pos[0]
+            object.position['y'] = pos[1]
+            object.position['z'] = pos[2]
+            object.scale['x'] = scale[0]
+            object.scale['y'] = scale[1]
+            object.scale['z'] = scale[2]
+            object.rotateX(rotate[0])
+            object.rotateY(rotate[1])
+            object.rotateZ(rotate[2])
+
             scene.add(object)
             scene.primitives += 1;
         },
@@ -44,33 +54,56 @@ function loadMeshObj(file, objColor, scale = [1,1,1], pos, ka, kd, ks) {
     // scene.primitives += 1;
 }
 
-document.addEventListener('keydown', function (event) {
-	console.log("Key pressed = ", event.key);
-	if(event.key == "/") {
-        let s = scene.getObjectByName("3")
-        // s.position['x'] += 2
-        // console.log(s.position)
-        let shape = new Shape()
-        // s.position.set(1,1,0)
-        // console.log(s)
-        // scene.getObjectByName("3").copy(shape)
+// document.addEventListener('keydown', function (event) {
+// 	console.log("Key pressed = ", event.key);
+// 	if(event.key == "/") {
+//         let s = scene.getObjectByName("3")
+//         // s.position['x'] += 2
+//         // console.log(s.position)
+//         let shape = new Shape()
+//         // s.position.set(1,1,0)
+//         // console.log(s)
+//         // scene.getObjectByName("3").copy(shape)
         // shape.position['x'] = s.position['x']
         // shape.position['y'] = s.position['y']
         // shape.position['z'] = s.position['z']
-        shape.name = s.name
-        shape.position['x'] = 1.5
-        shape.position['y'] = 1.5
-        shape.position['z'] = 1.5
-        scene.remove(scene.getObjectByName("3"))
-        console.log(shape)
-        scene.add(shape);
+//         shape.name = s.name
+//         shape.position['x'] = 1.5
+//         shape.position['y'] = 1.5
+//         shape.position['z'] = 1.5
+//         // shape.scale['x'] = 100000000000
+//         // shape.scale['y'] = 100000000000
+//         // shape.scale['z'] = 100000000000
+//         // shape.rotateX(-1.5)
+//         scene.remove(scene.getObjectByName("3"))
+//         console.log(shape)
+//         scene.add(shape);
+//         console.log(scene)
     
-	}
+// 	}
 
 
-}, false);
+// }, false);
 
-loadMeshObj('./objects/sphere.obj', 0x00ff00, [0.5,0.5,0.5],[-1,1,0],0.4,0.4,0.4);
+loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
+loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
+loadMeshObj('./objects/football.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[0,0,0],[1.5,-1.5,0]);
+
+loadMeshObj('./objects/goal.obj', 0x000000, 0.4,0.4,0.4, [3.2,1,1],[7,-3.5,0],[Math.PI/2,Math.PI/2,0]);
+loadMeshObj('./objects/goal.obj', 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-7,-3.5,0],[-0,0,Math.PI/2]);
+let s = scene.getObjectByName("3")
+
+const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
+const points = [];
+points.push( new THREE.Vector3( 0, 0, 0 ) );
+points.push( new THREE.Vector3( 0, 4, 0 ) );
+points.push( new THREE.Vector3( 0, -4, 0 ) );
+
+const geometry = new THREE.BufferGeometry().setFromPoints( points );
+const line = new THREE.Line( geometry, material );
+scene.add( line );
+
+// loadMeshObj('./objects/player.obj', 0x00ff00, [0.5,0.5,0.5],[-1,1,0],0.4,0.4,0.4);
 
 // const clone = JSON.parse(JSON.stringify(camera))
 
