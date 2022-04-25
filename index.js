@@ -1,11 +1,17 @@
 import * as THREE from 'three'
+// import {TrackballControls} from 'three/examples/jsm/controls/OrbitControls';
+
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
-
-// import structuredClone from "@ungap/structured-clone"
+import { TrackballControls } from 'TrackballControls'
+// import { TrackballControls } from './lib/trackball.js'
+// import TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';
+// import { TrackballControls } from 'https://unpkg.com/browse/three@0.92.0/examples/js/controls/TrackballControls.js';
+// import TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';
+// import structuredClone from "@ungap/structuredimport TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';-clone"
 
 let camera = new Camera()
-camera.position.z = 5;
+camera.position.z = 10;
 
 let scene = new Scene()
 let renderer = new Renderer()
@@ -84,7 +90,7 @@ function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1
 
 // }, false);
 
-loadMeshObj('./objects/field.obj', 0x00ff00, 0.4,0.4,0.4, [1.5,32,0.5],[0,0,-5],[0,0,0]);
+loadMeshObj('./objects/field.obj', 0x00ff00, 0.4,0.4,0.4, [0.95,17,0.5],[0,0,-2.5],[0,0,0]);
 loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
 loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
 loadMeshObj('./objects/football.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[0,0,0],[1.5,-1.5,0]);
@@ -113,9 +119,12 @@ scene.add( line );
 
 scene.addLight("l3")
 
+const controls = new TrackballControls(camera, renderer.domElement)
+console.log(controls);
 
 function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
+    controls.update();
 }
 animate();
