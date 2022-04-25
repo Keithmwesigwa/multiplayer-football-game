@@ -32,7 +32,7 @@ grassTexture.wrapS = THREE.RepeatWrapping;
 grassTexture.wrapT = THREE.RepeatWrapping;
 // soccerTexture.wrapS = THREE.RepeatWrapping;
 // soccerTexture.wrapT = THREE.RepeatWrapping;
-function loadMeshObj(file, objColor=0xffffff, objName, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , texture="NULL") {
+function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , texture="NULL") {
 
     loader.load(
         // resource URL
@@ -58,7 +58,7 @@ function loadMeshObj(file, objColor=0xffffff, objName, ka=0.4, kd=0.4, ks=0.4, s
                 }
             });
 
-            object.name = objName;
+            object.name = name;
             object.position['x'] = pos[0]
             object.position['y'] = pos[1]
             object.position['z'] = pos[2]
@@ -76,13 +76,12 @@ function loadMeshObj(file, objColor=0xffffff, objName, ka=0.4, kd=0.4, ks=0.4, s
     // scene.primitives += 1;
 }
 
-loadMeshObj('./objects/football_field.obj', 0x00ff00, "field", 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
-loadMeshObj('./objects/football_player.obj', 0x0000ff, "player2", 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
-loadMeshObj('./objects/football_player.obj', 0x0000ff, "player1", 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
-loadMeshObj('./objects/sphere.obj', 0xffffff, "ball", 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
-
-loadMeshObj('./objects/goal.obj', 0x000000, "goal2", 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
-loadMeshObj('./objects/goal.obj', 0x000000, "goal1", 0.4,0.4,0.4, [3.2,1,1],[-11.2,-3.5,0.36],[-0,0,Math.PI/2]);
+loadMeshObj('./objects/football_field.obj', "field", 0x00ff00, 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
+loadMeshObj('./objects/football_player.obj', "player_1", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
+loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
+loadMeshObj('./objects/sphere.obj', "ball", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
+loadMeshObj('./objects/goal.obj', "goal_1" , 0x000000, 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
+loadMeshObj('./objects/goal.obj', "goal_2", 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-11.2,-3.5,0.36],[-0,0,Math.PI/2]);
 
 const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
 const points = [];
@@ -94,11 +93,7 @@ const geometry = new THREE.BufferGeometry().setFromPoints( points );
 const line = new THREE.Line( geometry, material );
 scene.add( line );
 
-let player1 = null;
-let player2 = null;
-let ball = null;
-let moveBy = 0.02;
-let offset = 0.6;
+let offset = 0.7;
 
 function getBall(player,ball) {
     let bbox = new THREE.Box3().setFromObject(player)
@@ -118,80 +113,99 @@ function getBall(player,ball) {
         }
 }
 
-document.addEventListener('keydown', function (event) {
-	console.log("Key pressed = ", event.key);
-
-    if(event.key == "/") {
-        player1 = scene.getObjectByName("player1")
-        player2 = scene.getObjectByName("player2")
-        ball = scene.getObjectByName("ball")
-        console.log(ball.parent)
-    }
-
-    else if(event.key == "a") {
-        // console.log(ball.position)
-        player1.position['x'] -= moveBy;
-    }
-
-    else if(event.key == "d") {
-        player1.position['x'] += moveBy;
-    }
-
-    else if(event.key == "w") {
-        player1.position['y'] += moveBy;
-    }
-
-    else if(event.key == "s") {
-        player1.position['y'] -= moveBy;
-    }
-
-    else if(event.key == "ArrowLeft") {
-        player2.position['x'] -= moveBy;
-    }
-
-    else if(event.key == "ArrowRight") {
-        player2.position['x'] += moveBy;
-    }
-
-    else if(event.key == "ArrowUp") {
-        player2.position['y'] += moveBy;
-    }
-
-    else if(event.key == "ArrowDown") {
-        player2.position['y'] -= moveBy;
-    }
-
-    else if (event.key == "q") {
-        getBall(player1, ball)
-    }
-
-    else if (event.key == "p") {
-        getBall(player2, ball)
-    }
-
-    // else if (event.key == "r") {
-    // }
-
-
-}, false);
-
-
-// loadMeshObj('./objects/player.obj', 0x00ff00, [0.5,0.5,0.5],[-1,1,0],0.4,0.4,0.4);
-
-// const clone = JSON.parse(JSON.stringify(camera))
-
-// let light = new THREE.AmbientLight(0xffffff)
-// light.name = "light"
-// scene.add(light)
-
 scene.addLight("l3")
 
 const controls = new TrackballControls(camera, renderer.domElement)
-console.log(controls);
+
+let dictionary_keys = {};
+
+function checkKeys()
+{
+    for (const [key_pressed, value] of Object.entries(dictionary_keys))
+    {
+        // console.log(key_pressed + " " + value);
+        if(value == false)
+            continue;
+        
+        /**
+         * Player 1 controls
+         */
+
+        if(key_pressed == "a")
+        {
+            let s = scene.getObjectByName("player_1");
+            s.position['x'] -= 0.05;
+        }
+        else if(key_pressed == "d")
+        {
+            let s = scene.getObjectByName("player_1");
+            s.position['x'] += 0.05;
+        }
+        else if(key_pressed == "w")
+        {
+            let s = scene.getObjectByName("player_1");
+            s.position['y'] += 0.05;
+        }
+        else if(key_pressed == "s")
+        {
+            let s = scene.getObjectByName("player_1");
+            s.position['y'] -= 0.05;    
+        }
+        else if (key_pressed == "q") {
+            let p = scene.getObjectByName("player_1");
+            let b = scene.getObjectByName("ball");
+            getBall(p, b)
+        }
+
+
+        /**
+         * Player 2 controls
+         */
+
+        else if(key_pressed == "ArrowLeft")
+        {
+            let s = scene.getObjectByName("player_2");
+            s.position['x'] -= 0.05;
+        }
+        else if(key_pressed == "ArrowRight")
+        {
+            let s = scene.getObjectByName("player_2");
+            s.position['x'] += 0.05;
+        }
+        else if(key_pressed == "ArrowUp")
+        {
+            let s = scene.getObjectByName("player_2");
+            s.position['y'] += 0.05;
+        }
+        else if(key_pressed == "ArrowDown")
+        {
+            let s = scene.getObjectByName("player_2");
+            s.position['y'] -= 0.05;
+        }
+        else if (key_pressed == "p") {
+            let p = scene.getObjectByName("player_2");
+            let b = scene.getObjectByName("ball");
+            getBall(p, b)
+        }
+    }
+}
+
+document.addEventListener('keydown', function (event)
+{
+    console.log(event.key);
+    dictionary_keys[event.key] = true;
+}, false);
+
+document.addEventListener('keyup', function (event)
+{
+    console.log(event.key);
+    dictionary_keys[event.key] = false;
+}, false);
 
 function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
     controls.update();
+    checkKeys();
 }
 animate();
