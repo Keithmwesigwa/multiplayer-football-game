@@ -18,7 +18,6 @@ scene.background = new THREE.Color(0xe5e5e5);
 
 let loader = new OBJLoader();
 
-
 function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] ) {
 
     loader.load(
@@ -36,7 +35,7 @@ function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1
                 }
             });
 
-            object.name = (scene.primitives + 3).toString();
+            object.name = (scene.primitives).toString();
             object.position['x'] = pos[0]
             object.position['y'] = pos[1]
             object.position['z'] = pos[2]
@@ -85,6 +84,7 @@ function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1
 
 // }, false);
 
+loadMeshObj('./objects/field.obj', 0x00ff00, 0.4,0.4,0.4, [1.5,32,0.5],[0,0,-5],[0,0,0]);
 loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
 loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
 loadMeshObj('./objects/football.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[0,0,0],[1.5,-1.5,0]);
