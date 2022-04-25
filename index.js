@@ -11,7 +11,7 @@ import { TrackballControls } from 'TrackballControls'
 // import structuredClone from "@ungap/structuredimport TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';-clone"
 
 let camera = new Camera()
-camera.position.z = 10;
+camera.position.z = 8;
 
 let scene = new Scene()
 let renderer = new Renderer()
@@ -23,8 +23,16 @@ document.body.appendChild(canvas);
 scene.background = new THREE.Color(0xe5e5e5);
 
 let loader = new OBJLoader();
-
-function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] ) {
+const textureLoader = new THREE.TextureLoader()
+const grassTexture = textureLoader.load( "images/Stylized_Grass.jpg" );
+const soccerTexture = textureLoader.load( "images/football.jpg" );
+soccerTexture.flipY = true
+soccerTexture.rotation =  -0.1
+grassTexture.wrapS = THREE.RepeatWrapping;
+grassTexture.wrapT = THREE.RepeatWrapping;
+// soccerTexture.wrapS = THREE.RepeatWrapping;
+// soccerTexture.wrapT = THREE.RepeatWrapping;
+function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , texture="NULL") {
 
     loader.load(
         // resource URL
@@ -34,7 +42,16 @@ function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1
             object.traverse(function (obj) {
                 if (obj.isMesh) {
                     // obj.geometry.mergeVertices()
-                    obj.material = new THREE.MeshLambertMaterial()
+                    if(texture === "NULL"){
+                        obj.material = new THREE.MeshLambertMaterial()
+                    }
+                    else{
+                        obj.material = new THREE.MeshLambertMaterial(
+                            {
+                                map: texture
+                            }
+                        )
+                    }
                     // console.log(Scene)
                     scene.setMaterialProperties(obj.material,ka,kd,ks)
                     obj.material.color.setHex(objColor);
@@ -90,13 +107,13 @@ function loadMeshObj(file, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1
 
 // }, false);
 
-loadMeshObj('./objects/field.obj', 0x00ff00, 0.4,0.4,0.4, [0.95,17,0.5],[0,0,-2.5],[0,0,0]);
-loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
-loadMeshObj('./objects/football_player.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
-loadMeshObj('./objects/football.obj', 0x00ff00, 0.4,0.4,0.4, [1,1,1],[0,0,0],[1.5,-1.5,0]);
+loadMeshObj('./objects/football_field.obj', 0x00ff00, 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
+loadMeshObj('./objects/football_player.obj', 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
+loadMeshObj('./objects/football_player.obj', 0x0000ff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
+loadMeshObj('./objects/sphere.obj', 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
 
-loadMeshObj('./objects/goal.obj', 0x000000, 0.4,0.4,0.4, [3.2,1,1],[7,-3.5,0],[Math.PI/2,Math.PI/2,0]);
-loadMeshObj('./objects/goal.obj', 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-7,-3.5,0],[-0,0,Math.PI/2]);
+loadMeshObj('./objects/goal.obj', 0x000000, 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
+loadMeshObj('./objects/goal.obj', 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-11.2,-3.5,0.36],[-0,0,Math.PI/2]);
 let s = scene.getObjectByName("3")
 
 const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
