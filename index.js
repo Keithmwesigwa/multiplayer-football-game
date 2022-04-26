@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
 import { TrackballControls } from 'TrackballControls'
+import { FirstPersonControls } from 'FirstPersonControls'
 // import { TrackballControls } from './lib/trackball.js'
 // import TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';
 // import { TrackballControls } from 'https://unpkg.com/browse/three@0.92.0/examples/js/controls/TrackballControls.js';
@@ -77,7 +78,7 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
 }
 
 loadMeshObj('./objects/football_field.obj', "field", 0x00ff00, 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
-loadMeshObj('./objects/football_player.obj', "player_1", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
+loadMeshObj('./objects/football_player.obj', "player_1", 0x00ffff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
 loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
 loadMeshObj('./objects/sphere.obj', "ball", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
 loadMeshObj('./objects/goal.obj', "goal_1" , 0x000000, 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
@@ -126,7 +127,7 @@ function checkKeys()
         // console.log(key_pressed + " " + value);
         if(value == false)
             continue;
-        
+
         /**
          * Player 1 controls
          */
@@ -149,7 +150,7 @@ function checkKeys()
         else if(key_pressed == "s")
         {
             let s = scene.getObjectByName("player_1");
-            s.position['y'] -= 0.05;    
+            s.position['y'] -= 0.05;
         }
         else if (key_pressed == "q") {
             let p = scene.getObjectByName("player_1");
@@ -190,21 +191,73 @@ function checkKeys()
     }
 }
 
+let flag = 0;
+let camera_player_1 = new Camera();
+let camera_player_2 = new Camera();
+let init = 0;
+
 document.addEventListener('keydown', function (event)
 {
-    console.log(event.key);
     dictionary_keys[event.key] = true;
+    if(init == 0)
+    {
+        init = 1;
+        let p1 = scene.getObjectByName("player_1");
+        let pos1 = p1.position;
+        camera_player_1.position.x = pos1['x'];
+        camera_player_1.position.y = pos1['y'];
+        camera_player_1.position.z = pos1['z']+1.2;
+
+
+        let la_1 = new THREE.Vector3(-0.8,0,1.2);
+        camera_player_1.lookAt(la_1);
+
+        const quaternion_1 = new THREE.Quaternion();
+		quaternion_1.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/2);
+		camera_player_1.applyQuaternion( quaternion_1 );
+
+        let p2 = scene.getObjectByName("player_2");
+        let pos2 = p2.position;
+        camera_player_2.position.x = pos2['x'];
+        camera_player_2.position.y = pos2['y'];
+        camera_player_2.position.z = pos2['z']+1.2;
+
+        let la_2 = new THREE.Vector3(-0.8,0,1.2);
+        camera_player_2.lookAt(la_2);
+
+        const quaternion_2 = new THREE.Quaternion();
+		quaternion_2.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/2);
+		camera_player_2.applyQuaternion( quaternion_2 );
+
+    }
+    
+    if(event.key == 'b')
+    {
+        flag = 0;
+    }
+    else if(event.key == 'n')
+    {
+        flag = 1;
+    }
+    else if(event.key == 'm')
+    {
+        flag = 2;
+    }
 }, false);
 
 document.addEventListener('keyup', function (event)
 {
-    console.log(event.key);
     dictionary_keys[event.key] = false;
 }, false);
 
 function animate() {
 	requestAnimationFrame(animate);
-	renderer.render(scene, camera);
+    if(flag == 0)
+    	renderer.render(scene, camera);
+    else if(flag == 1)
+        renderer.render(scene, camera_player_1);
+    else
+        renderer.render(scene, camera_player_2);
     controls.update();
     checkKeys();
 }
