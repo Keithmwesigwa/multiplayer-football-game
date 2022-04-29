@@ -108,10 +108,14 @@ function getBall(player,ball) {
         pos['y'] > bbox.min['y'] - offset &&
         pos['y'] < bbox.max['y'] + offset
         ) {
+            animBall_kick = false;
+            animBall_dribble = false;
             if(player == player1){
+                playerWithBall = player1
                 player1.add(ball)
             } 
             else {
+                playerWithBall = player2
                 player2.add(ball)
             }
         }
@@ -206,6 +210,14 @@ function checkKeys()
             camera_player_2.applyQuaternion( quaternion );
         }
 
+        else if (key_pressed == 'q') {
+            getBall(player1, ball)
+        }
+    
+        else if (key_pressed == 'p') {
+            getBall(player2, ball)
+        }
+
     }
 }
 
@@ -274,34 +286,38 @@ document.addEventListener('keydown', function (event)
         flag = 2;
     }
 
-    else if (event.key == 'q') {
-        getBall(player1, ball)
+    // else if (event.key == 'q') {
+    //     getBall(player1, ball)
+    // }
+
+    // else if (event.key == 'p') {
+    //     getBall(player2, ball)
+    // }
+
+    else if(event.key == 'f' && playerWithBall==player1) {
+        animBall_dribble = true;
+        incr = true
     }
 
-    else if (event.key == 'p') {
-        getBall(player2, ball)
+    else if(event.key == 'j' && playerWithBall==player2) {
+        animBall_dribble = true;
+        incr = false
     }
 
-    else if(event.key == 'f') {
-
-    }
-
-    else if(event.key == 'g')
+    else if(event.key == 'g' && playerWithBall == player1)
     {
         let meshPos = new THREE.Vector3()
         ball.getWorldPosition(meshPos)
         scene.add(ball)
         ball.position.set(meshPos.x,meshPos.y,meshPos.z)
-        kickPlayer = player1;
         animBall_kick = true
     }
-    else if(event.key == "h") 
+    else if(event.key == "h" && playerWithBall == player2) 
     {
         let meshPos = new THREE.Vector3()
         ball.getWorldPosition(meshPos)
         scene.add(ball)
         ball.position.set(meshPos.x,meshPos.y,meshPos.z)
-        kickPlayer = player2;
         animBall_kick = true
     }
 }, false);
@@ -313,7 +329,9 @@ document.addEventListener('keyup', function (event)
 
 let animBall_kick = false;
 let animBall_dribble = false;
-let kickPlayer
+let playerWithBall
+let incr = false;
+let count = 0
 
 function animateBall(){
     if(!animBall_kick && !animBall_dribble){
@@ -321,11 +339,30 @@ function animateBall(){
     }
 
     else if(animBall_kick) {
-        if(kickPlayer == player1){
+        if(playerWithBall == player1){
             ball.position['x'] += 0.1
         } 
         else {
             ball.position['x'] -= 0.1
+        }
+    }
+
+    else {
+        if(incr){
+            ball.position['z'] += 0.01
+            count+=1
+            if(count == 75){
+                count = 0
+                incr = false
+            }
+        }
+        else{
+            ball.position['z'] -= 0.01
+            count+=1
+            if(count == 75){
+                count = 0
+                incr = true
+            }
         }
     }
 }
