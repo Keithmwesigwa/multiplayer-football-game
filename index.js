@@ -153,7 +153,21 @@ function checkKeys()
         {
             player1.position['y'] -= 0.05;
         }
-        
+        else if (key_pressed == "(")
+        {
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), Math.PI / 180 );
+            player1.applyQuaternion( quaternion );
+            camera_player_1.applyQuaternion( quaternion );
+        }
+    
+        else if (key_pressed == ")")
+        {
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), -Math.PI / 180 );
+            player1.applyQuaternion( quaternion );
+            camera_player_1.applyQuaternion( quaternion );
+        }
 
 
         /**
@@ -176,6 +190,22 @@ function checkKeys()
         {
             player2.position['y'] -= 0.05
         }
+        else if (key_pressed == "[")
+        {
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), Math.PI / 180 );
+            player2.applyQuaternion( quaternion );
+            camera_player_2.applyQuaternion( quaternion );
+        }
+    
+        else if (key_pressed == "]")
+        {
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), -Math.PI / 180 );
+            player2.applyQuaternion( quaternion );
+            camera_player_2.applyQuaternion( quaternion );
+        }
+
     }
 }
 
