@@ -28,12 +28,10 @@ const textureLoader = new THREE.TextureLoader()
 const grassTexture = textureLoader.load( "images/Stylized_Grass.jpg" );
 const rockTexture = textureLoader.load( "images/stone.jpg" );
 const soccerTexture = textureLoader.load( "images/football.jpg" );
-soccerTexture.flipY = true
-soccerTexture.rotation =  -0.1
 grassTexture.wrapS = THREE.RepeatWrapping;
 grassTexture.wrapT = THREE.RepeatWrapping;
-// rockTexture.wrapS = THREE.RepeatWrapping;
-// rockTexture.wrapT = THREE.RepeatWrapping;
+rockTexture.wrapS = THREE.RepeatWrapping;
+rockTexture.wrapT = THREE.RepeatWrapping;
 function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , texture="NULL") {
 
     loader.load(
