@@ -26,13 +26,14 @@ scene.background = new THREE.Color(0xe5e5e5);
 let loader = new OBJLoader();
 const textureLoader = new THREE.TextureLoader()
 const grassTexture = textureLoader.load( "images/Stylized_Grass.jpg" );
+const rockTexture = textureLoader.load( "images/stone.jpg" );
 const soccerTexture = textureLoader.load( "images/football.jpg" );
 soccerTexture.flipY = true
 soccerTexture.rotation =  -0.1
 grassTexture.wrapS = THREE.RepeatWrapping;
 grassTexture.wrapT = THREE.RepeatWrapping;
-// soccerTexture.wrapS = THREE.RepeatWrapping;
-// soccerTexture.wrapT = THREE.RepeatWrapping;
+// rockTexture.wrapS = THREE.RepeatWrapping;
+// rockTexture.wrapT = THREE.RepeatWrapping;
 function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , texture="NULL") {
 
     loader.load(
@@ -81,6 +82,10 @@ loadMeshObj('./objects/football_field.obj', "field", 0x00ff00, 0.4,0.4,0.4, [0.4
 loadMeshObj('./objects/football_player.obj', "player_1", 0x00ffff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
 loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
 loadMeshObj('./objects/sphere.obj', "ball", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
+loadMeshObj('./objects/teapot.obj', "teapot", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[-2,-4,0],[0,0,0],rockTexture);
+loadMeshObj('./objects/urn.obj', "urn", 0xffffff, 0.4,0.4,0.4, [0.3,0.3,0.3],[-2,4,0.3],[Math.PI/2,0,0],rockTexture);
+loadMeshObj('./objects/canstick.obj', "canstick", 0xffffff, 0.4,0.4,0.4, [5,5,5],[2,4,0.5],[Math.PI/2,0,0],rockTexture);
+loadMeshObj('./objects/sphere.obj', "sphere", 0xffffff, 0.4,0.4,0.4, [0.4,0.4,0.4],[2,-4,0.4],[Math.PI/2,0,0],rockTexture);
 loadMeshObj('./objects/goal.obj', "goal_1" , 0x000000, 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
 loadMeshObj('./objects/goal.obj', "goal_2", 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-11.2,-3.5,0.36],[-0,0,Math.PI/2]);
 
@@ -154,19 +159,71 @@ function checkKeys()
 
         if(key_pressed == "a")
         {
-            player1.position['x'] -= 0.05;
+            if(flag == 0){
+                player1.position['x'] -= 0.05
+                camera_player_1.position['x'] -= 0.05
+            }
+            else if (flag == 1)
+            {
+                player1.position['y'] += 0.05
+                camera_player_1.position['y'] += 0.05
+            }
+            else if (flag == 2)
+            {
+                player1.position['y'] -= 0.05
+                camera_player_1.position['y'] -= 0.05
+            }
         }
         else if(key_pressed == "d")
         {
-            player1.position['x'] += 0.05;
+            if(flag == 0){
+                player1.position['x'] += 0.05
+                camera_player_1.position['x'] += 0.05
+            }
+            else if (flag == 1)
+            {
+                player1.position['y'] -= 0.05
+                camera_player_1.position['y'] -= 0.05
+            }
+            else if (flag == 2)
+            {
+                player1.position['y'] += 0.05
+                camera_player_1.position['y'] += 0.05
+            }
         }
         else if(key_pressed == "w")
         {
-            player1.position['y'] += 0.05;
+            if(flag == 0){
+                player1.position['y'] += 0.05
+                camera_player_1.position['y'] += 0.05
+            }
+            else if (flag == 1)
+            {
+                player1.position['x'] += 0.05
+                camera_player_1.position['x'] += 0.05
+            }
+            else if (flag == 2)
+            {
+                player1.position['x'] -= 0.05
+                camera_player_1.position['x'] -= 0.05
+            }
         }
         else if(key_pressed == "s")
         {
-            player1.position['y'] -= 0.05;
+            if(flag == 0){
+                player1.position['y'] -= 0.05
+                camera_player_1.position['y'] -= 0.05
+            }
+            else if (flag == 1)
+            {
+                player1.position['x'] -= 0.05
+                camera_player_1.position['x'] -= 0.05
+            }
+            else if (flag == 2)
+            {
+                player1.position['x'] += 0.05
+                camera_player_1.position['x'] += 0.05
+            }
         }
         else if (key_pressed == "(")
         {
@@ -191,19 +248,71 @@ function checkKeys()
 
         else if(key_pressed == "ArrowLeft")
         {
-            player2.position['x'] -= 0.05
+            if(flag == 0){
+                player2.position['x'] -= 0.05
+                camera_player_2.position['x'] -= 0.05
+            }
+            else if (flag == 1)
+            {
+                player2.position['y'] += 0.05
+                camera_player_2.position['y'] += 0.05
+            }
+            else if (flag == 2)
+            {
+                player2.position['y'] -= 0.05
+                camera_player_2.position['y'] -= 0.05
+            }
         }
-        else if(key_pressed == "ArrowRight")
+        else if(key_pressed == "ArrowRight")    
         {
-            player2.position['x'] += 0.05
+            if(flag == 0){
+                player2.position['x'] += 0.05
+                camera_player_2.position['x'] += 0.05
+            }
+            else if (flag == 1)
+            {
+                player2.position['y'] -= 0.05
+                camera_player_2.position['y'] -= 0.05
+            }
+            else if (flag == 2)
+            {
+                player2.position['y'] += 0.05
+                camera_player_2.position['y'] += 0.05
+            }
         }
         else if(key_pressed == "ArrowUp")
         {
-            player2.position['y'] += 0.05
+            if(flag == 0){
+                player2.position['y'] += 0.05
+                camera_player_2.position['y'] += 0.05
+            }
+            else if (flag == 1)
+            {
+                player2.position['x'] += 0.05
+                camera_player_2.position['x'] += 0.05
+            }
+            else if (flag == 2)
+            {
+                player2.position['x'] -= 0.05
+                camera_player_2.position['x'] -= 0.05
+            }
         }
         else if(key_pressed == "ArrowDown")
         {
-            player2.position['y'] -= 0.05
+            if(flag == 0){
+                player2.position['y'] -= 0.05
+                camera_player_2.position['y'] -= 0.05
+            }
+            else if (flag == 1)
+            {
+                player2.position['x'] -= 0.05
+                camera_player_2.position['x'] -= 0.05
+            }
+            else if (flag == 2)
+            {
+                player2.position['x'] += 0.05
+                camera_player_2.position['x'] += 0.05
+            }
         }
         else if (key_pressed == "[")
         {
@@ -358,6 +467,8 @@ function animateBall(){
         else {
             ball.position['x'] -= 0.1
         }
+    ball.rotateZ(0.1)
+
     }
 
     else {
@@ -377,6 +488,7 @@ function animateBall(){
                 incr = true
             }
         }
+        ball.rotateZ(0.1)
     }
 }
 
@@ -391,5 +503,6 @@ function animate() {
     controls.update();
     checkKeys();
     animateBall();
+
 }
 animate();
