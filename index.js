@@ -98,8 +98,6 @@ let offset = 0.7;
 
 function getBall(player,ball) {
     let bbox = new THREE.Box3().setFromObject(player)
-    // console.log(bbox)
-    // console.log(ball.position)
     let pos = ball.position
     if(ball.parent != scene){
         pos = ball.parent.position
@@ -110,8 +108,15 @@ function getBall(player,ball) {
         pos['y'] > bbox.min['y'] - offset &&
         pos['y'] < bbox.max['y'] + offset
         ) {
-            player.add(ball)
+            if(player == player1){
+                player1.add(ball)
+            } 
+            else {
+                player2.add(ball)
+            }
         }
+    console.log(player_ball)
+    
 }
 
 scene.addLight("l3")
@@ -134,29 +139,21 @@ function checkKeys()
 
         if(key_pressed == "a")
         {
-            let s = scene.getObjectByName("player_1");
-            s.position['x'] -= 0.05;
+            player1.position['x'] -= 0.05;
         }
         else if(key_pressed == "d")
         {
-            let s = scene.getObjectByName("player_1");
-            s.position['x'] += 0.05;
+            player1.position['x'] += 0.05;
         }
         else if(key_pressed == "w")
         {
-            let s = scene.getObjectByName("player_1");
-            s.position['y'] += 0.05;
+            player1.position['y'] += 0.05;
         }
         else if(key_pressed == "s")
         {
-            let s = scene.getObjectByName("player_1");
-            s.position['y'] -= 0.05;
+            player1.position['y'] -= 0.05;
         }
-        else if (key_pressed == "q") {
-            let p = scene.getObjectByName("player_1");
-            let b = scene.getObjectByName("ball");
-            getBall(p, b)
-        }
+        
 
 
         /**
@@ -165,28 +162,19 @@ function checkKeys()
 
         else if(key_pressed == "ArrowLeft")
         {
-            let s = scene.getObjectByName("player_2");
-            s.position['x'] -= 0.05;
+            player2.position['x'] -= 0.05
         }
         else if(key_pressed == "ArrowRight")
         {
-            let s = scene.getObjectByName("player_2");
-            s.position['x'] += 0.05;
+            player2.position['x'] += 0.05
         }
         else if(key_pressed == "ArrowUp")
         {
-            let s = scene.getObjectByName("player_2");
-            s.position['y'] += 0.05;
+            player2.position['y'] += 0.05
         }
         else if(key_pressed == "ArrowDown")
         {
-            let s = scene.getObjectByName("player_2");
-            s.position['y'] -= 0.05;
-        }
-        else if (key_pressed == "p") {
-            let p = scene.getObjectByName("player_2");
-            let b = scene.getObjectByName("ball");
-            getBall(p, b)
+            player2.position['y'] -= 0.05
         }
     }
 }
@@ -195,13 +183,25 @@ let flag = 0;
 let camera_player_1 = new Camera();
 let camera_player_2 = new Camera();
 let init = 0;
+let player_ball = new THREE.Group();
+let player1
+let player2
+let ball
+scene.add(player_ball)
 
 document.addEventListener('keydown', function (event)
 {
+
     dictionary_keys[event.key] = true;
     if(init == 0)
     {
         init = 1;
+
+        player1 = scene.getObjectByName("player_1");
+        player2 = scene.getObjectByName("player_2")
+        ball = scene.getObjectByName("ball")
+        player_ball.add(ball)
+
         let p1 = scene.getObjectByName("player_1");
         let pos1 = p1.position;
         camera_player_1.position.x = pos1['x'];
@@ -243,12 +243,62 @@ document.addEventListener('keydown', function (event)
     {
         flag = 2;
     }
+
+    else if (event.key == 'q') {
+        getBall(player1, ball)
+    }
+
+    else if (event.key == 'p') {
+        getBall(player2, ball)
+    }
+
+    else if(event.key == 'f') {
+
+    }
+
+    else if(event.key == 'g')
+    {
+        let meshPos = new THREE.Vector3()
+        ball.getWorldPosition(meshPos)
+        scene.add(ball)
+        ball.position.set(meshPos.x,meshPos.y,meshPos.z)
+        kickPlayer = player1;
+        animBall_kick = true
+    }
+    else if(event.key == "h") 
+    {
+        let meshPos = new THREE.Vector3()
+        ball.getWorldPosition(meshPos)
+        scene.add(ball)
+        ball.position.set(meshPos.x,meshPos.y,meshPos.z)
+        kickPlayer = player2;
+        animBall_kick = true
+    }
 }, false);
 
 document.addEventListener('keyup', function (event)
 {
     dictionary_keys[event.key] = false;
 }, false);
+
+let animBall_kick = false;
+let animBall_dribble = false;
+let kickPlayer
+
+function animateBall(){
+    if(!animBall_kick && !animBall_dribble){
+        return
+    }
+
+    else if(animBall_kick) {
+        if(kickPlayer == player1){
+            ball.position['x'] += 0.1
+        } 
+        else {
+            ball.position['x'] -= 0.1
+        }
+    }
+}
 
 function animate() {
 	requestAnimationFrame(animate);
@@ -260,5 +310,6 @@ function animate() {
         renderer.render(scene, camera_player_2);
     controls.update();
     checkKeys();
+    animateBall();
 }
 animate();
