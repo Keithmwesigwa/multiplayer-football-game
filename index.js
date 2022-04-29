@@ -108,8 +108,9 @@ function getBall(player,ball) {
         pos['y'] > bbox.min['y'] - offset &&
         pos['y'] < bbox.max['y'] + offset
         ) {
-            animBall_kick = false;
-            animBall_dribble = false;
+            let ballPos = new THREE.Vector3()
+            ball.getWorldPosition(ballPos)
+
             if(player == player1){
                 playerWithBall = player1
                 player1.add(ball)
@@ -118,6 +119,16 @@ function getBall(player,ball) {
                 playerWithBall = player2
                 player2.add(ball)
             }
+
+            // if(ball.parent == scene && animBall_kick) {
+            //     ball.worldToLocal(ballPos)
+            //     ball.position.set(ballPos.x,ballPos.y,ballPos.z)
+            //     animBall_kick = false;
+            // }
+            ball.worldToLocal(ballPos)
+            ball.position.set(ballPos.x,ballPos.y,ballPos.z)
+            animBall_kick = false;
+            animBall_dribble = false;
         }
     console.log(player_ball)
     
@@ -295,13 +306,15 @@ document.addEventListener('keydown', function (event)
     // }
 
     else if(event.key == 'f' && playerWithBall==player1) {
-        animBall_dribble = true;
         incr = true
+        count = 0
+        animBall_dribble = true;
     }
 
     else if(event.key == 'j' && playerWithBall==player2) {
+        incr = true
+        count = 0
         animBall_dribble = true;
-        incr = false
     }
 
     else if(event.key == 'g' && playerWithBall == player1)
