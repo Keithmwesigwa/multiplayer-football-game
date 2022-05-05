@@ -494,7 +494,8 @@ let playerWithBall
 let incr = false;
 let count = 0
 let animBall_random = false
-let initBall_pos, finalBall_pos
+let initBall_pos
+let finalBall_pos = [0,0]
 
 function animateBall(){
     if(!animBall_kick && !animBall_random && !animBall_dribble){
@@ -521,7 +522,11 @@ function animateBall(){
                 animBall_kick = false; 
                 animBall_random = true;
                 initBall_pos = [pos['x'],pos['y']]
-                finalBall_pos = [-12.6,7.4]
+                finalBall_pos[0] = (Math.random()*25.2)-12.6;
+                finalBall_pos[1] = (Math.random()*14.8)-7.4;
+                if(finalBall_pos[0] == initBall_pos[0]) {
+                    finalBall_pos[0] += 0.1;
+                }
                 return
             }
             
@@ -531,20 +536,41 @@ function animateBall(){
     }
 
     else if (animBall_random) {
+        let pos = ball.position
+        for(let i=0; i<obstacles.length; i++){
+            let bbox = new THREE.Box3().setFromObject(obstacles[i])
+            if(
+                pos['x'] > bbox.min['x'] &&
+                pos['x'] < bbox.max['x'] &&
+                pos['y'] > bbox.min['y'] &&
+                pos['y'] < bbox.max['y']
+            ) {
+                initBall_pos = [pos['x'],pos['y']]
+                finalBall_pos[0] = (Math.random()*25.2)-12.6;
+                finalBall_pos[1] = (Math.random()*14.8)-7.4;
+                if(finalBall_pos[0] == initBall_pos[0]) {
+                    finalBall_pos[0] += 0.1;
+                }
+                // return
+            }
+        }
+
         let del_x
         let slope = (finalBall_pos[1]-initBall_pos[1])/(finalBall_pos[0]-initBall_pos[0])
         if(finalBall_pos[0] > initBall_pos[0]) {
-            ball.position['x'] += 0.08
-            del_x = 0.08
+            ball.position['x'] += 0.07
+            del_x = 0.07
         } 
         
         else {
-            ball.position['x'] -= 0.08
-            del_x = -0.08
+            ball.position['x'] -= 0.07
+            del_x = -0.07
         }
 
         let del_y = slope * del_x
         ball.position['y'] += del_y 
+        ball.rotateZ(0.1)
+
 
     }
 
