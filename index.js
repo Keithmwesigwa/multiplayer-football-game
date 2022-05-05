@@ -132,6 +132,7 @@ function getBall(player,ball) {
             ball.position.set(ballPos.x,ballPos.y,ballPos.z)
             animBall_kick = false;
             animBall_dribble = false;
+            animBall_random = false;
         }
     console.log(player_ball)
     
@@ -351,12 +352,14 @@ let player1
 let player2
 let ball
 scene.add(player_ball)
+let obstacles = [];
+
 let c = 0
 let spotLight1 = new THREE.SpotLight( 0xffffff );
 // spotLight1.rotation.set(0,Math.PI,0)
 // spotLight1.rotateOnAxis(new THREE.Vector3(0,1,0), 90*Math.PI/180);
 // spotLight1.rotateY(Math.PI/2)
-scene.add(spotLight1)
+// scene.add(spotLight1)
 
 document.addEventListener('keydown', function (event)
 {
@@ -375,6 +378,10 @@ document.addEventListener('keydown', function (event)
         spotLight1.getWorldRotation(meshPos)
         console.log(meshPos);
 
+        obstacles.push(scene.getObjectByName("sphere"))
+        obstacles.push(scene.getObjectByName("teapot"))
+        obstacles.push(scene.getObjectByName("urn"))
+        obstacles.push(scene.getObjectByName("canstick"))
 
         ball = scene.getObjectByName("ball")
         player_ball.add(ball)
@@ -436,43 +443,7 @@ document.addEventListener('keydown', function (event)
     }
 
     else if(event.key == '3'){
-        console.log("hello")
-        // const quaternion = new THREE.Quaternion();
-        // quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), Math.PI / 2 );
-        // spotLight1.applyQuaternion( quaternion );
-        // let meshPos = new THREE.Vector3()
-        // spotLight1.getWorldRotation(meshPos)
-        // console.log(meshPos);
-        // spotLight1.rotation['x'] += 0.01
-        let pos = player2.position
-        spotLight1.target = new THREE.Object3D(10,0,0)
-        console.log(spotLight1)
-        spotLight1.add(spotLight1.target)
-        c+=1
-        console.log(spotLight1.target.position)
-        // spotLight1.rotation.set(c,0,0)
-        // c+=0.01
-        // console.log(spotLight1.rotation)
-
-        // spotLight1.rotateOnAxis(new THREE.Vector3(0,0,1), 90*Math.PI/180); 
-        // spotLight1.rotateOnAxis(new THREE.Vector3(0,1,0), 90*Math.PI/180);
-        // spotLight1.rotateX(Math.PI/2)
-        // console.log(spotLight1.rotation)
-        
-        // let meshPos = new THREE.Vector3()
-        // spotLight1.getWorldRotation(meshPos)
-        // console.log(meshPos);
-        // spotLight1.rotation['x'] += 0.01
-        // console.log(spotLight1)
-    }
-
-    else if(event.key == '4'){
-        const quaternion = new THREE.Quaternion();
-        quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), -Math.PI / 180 );
-        spotLight1.applyQuaternion( quaternion );
-        let meshPos = new THREE.Vector3()
-        spotLight1.getWorldRotation(meshPos)
-        console.log(meshPos);
+        console.log(player2.position)
     }
 
     else if(event.key == 'f' && playerWithBall==player1) {
@@ -515,9 +486,11 @@ let animBall_dribble = false;
 let playerWithBall
 let incr = false;
 let count = 0
+let animBall_random = false
+let initBall_pos, finalBall_pos
 
 function animateBall(){
-    if(!animBall_kick && !animBall_dribble){
+    if(!animBall_kick && !animBall_random && !animBall_dribble){
         return
     }
 
@@ -528,7 +501,43 @@ function animateBall(){
         else {
             ball.position['x'] -= 0.1
         }
+        
+        let pos = ball.position
+        for(let i=0; i<obstacles.length; i++){
+            let bbox = new THREE.Box3().setFromObject(obstacles[i])
+            if(
+                pos['x'] > bbox.min['x'] &&
+                pos['x'] < bbox.max['x'] &&
+                pos['y'] > bbox.min['y'] &&
+                pos['y'] < bbox.max['y']
+            ) {
+                animBall_kick = false; 
+                animBall_random = true;
+                initBall_pos = [pos['x'],pos['y']]
+                finalBall_pos = [-12.6,7.4]
+                return
+            }
+            
+        }
     ball.rotateZ(0.1)
+
+    }
+
+    else if (animBall_random) {
+        let del_x
+        let slope = (finalBall_pos[1]-initBall_pos[1])/(finalBall_pos[0]-initBall_pos[0])
+        if(finalBall_pos[0] > initBall_pos[0]) {
+            ball.position['x'] += 0.08
+            del_x = 0.08
+        } 
+        
+        else {
+            ball.position['x'] -= 0.08
+            del_x = -0.08
+        }
+
+        let del_y = slope * del_x
+        ball.position['y'] += del_y 
 
     }
 
