@@ -490,6 +490,20 @@ function animateBall(){
     }
 }
 
+function refreshScreen() {
+    let field = scene.getObjectByName("field")
+    let bbox = new THREE.Box3().setFromObject(field);
+    let pos = ball.position
+    if(
+        pos['x'] < bbox.min['x'] ||
+        pos['x'] > bbox.max['x'] ||
+        pos['y'] < bbox.min['y'] ||
+        pos['y'] > bbox.max['y']
+    ) {
+        window.location.reload();
+    }
+}
+
 function animate() {
 	requestAnimationFrame(animate);
     if(flag == 0)
@@ -501,6 +515,7 @@ function animate() {
     controls.update();
     checkKeys();
     animateBall();
+    refreshScreen();
 
 }
 animate();
