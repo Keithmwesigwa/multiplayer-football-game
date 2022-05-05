@@ -139,6 +139,9 @@ function getBall(player,ball) {
 
 scene.addLight("l3")
 
+// let spotLight2 = new THREE.SpotLight( 0xffffff );
+
+
 const controls = new TrackballControls(camera, renderer.domElement)
 
 let dictionary_keys = {};
@@ -348,6 +351,12 @@ let player1
 let player2
 let ball
 scene.add(player_ball)
+let c = 0
+let spotLight1 = new THREE.SpotLight( 0xffffff );
+// spotLight1.rotation.set(0,Math.PI,0)
+// spotLight1.rotateOnAxis(new THREE.Vector3(0,1,0), 90*Math.PI/180);
+// spotLight1.rotateY(Math.PI/2)
+scene.add(spotLight1)
 
 document.addEventListener('keydown', function (event)
 {
@@ -359,6 +368,14 @@ document.addEventListener('keydown', function (event)
 
         player1 = scene.getObjectByName("player_1");
         player2 = scene.getObjectByName("player_2")
+        
+        // player1.add(spotLight1)
+        let meshPos = new THREE.Vector3()
+        // spotLight1.position['y']-=0.005
+        spotLight1.getWorldRotation(meshPos)
+        console.log(meshPos);
+
+
         ball = scene.getObjectByName("ball")
         player_ball.add(ball)
 
@@ -404,13 +421,59 @@ document.addEventListener('keydown', function (event)
         flag = 2;
     }
 
-    // else if (event.key == 'q') {
-    //     getBall(player1, ball)
-    // }
+    else if(event.key == '1'){
+        let meshPos = new THREE.Vector3()
+        spotLight1.position['z']+=0.005
+        spotLight1.getWorldPosition(meshPos)
+        // console.log(meshPos);
+    }
 
-    // else if (event.key == 'p') {
-    //     getBall(player2, ball)
-    // }
+    else if(event.key == '2'){
+        let meshPos = new THREE.Vector3()
+        spotLight1.position['z']-=0.005
+        spotLight1.getWorldPosition(meshPos)
+        // console.log(meshPos);
+    }
+
+    else if(event.key == '3'){
+        console.log("hello")
+        // const quaternion = new THREE.Quaternion();
+        // quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), Math.PI / 2 );
+        // spotLight1.applyQuaternion( quaternion );
+        // let meshPos = new THREE.Vector3()
+        // spotLight1.getWorldRotation(meshPos)
+        // console.log(meshPos);
+        // spotLight1.rotation['x'] += 0.01
+        let pos = player2.position
+        spotLight1.target = new THREE.Object3D(10,0,0)
+        console.log(spotLight1)
+        spotLight1.add(spotLight1.target)
+        c+=1
+        console.log(spotLight1.target.position)
+        // spotLight1.rotation.set(c,0,0)
+        // c+=0.01
+        // console.log(spotLight1.rotation)
+
+        // spotLight1.rotateOnAxis(new THREE.Vector3(0,0,1), 90*Math.PI/180); 
+        // spotLight1.rotateOnAxis(new THREE.Vector3(0,1,0), 90*Math.PI/180);
+        // spotLight1.rotateX(Math.PI/2)
+        // console.log(spotLight1.rotation)
+        
+        // let meshPos = new THREE.Vector3()
+        // spotLight1.getWorldRotation(meshPos)
+        // console.log(meshPos);
+        // spotLight1.rotation['x'] += 0.01
+        // console.log(spotLight1)
+    }
+
+    else if(event.key == '4'){
+        const quaternion = new THREE.Quaternion();
+        quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), -Math.PI / 180 );
+        spotLight1.applyQuaternion( quaternion );
+        let meshPos = new THREE.Vector3()
+        spotLight1.getWorldRotation(meshPos)
+        console.log(meshPos);
+    }
 
     else if(event.key == 'f' && playerWithBall==player1) {
         incr = true
@@ -492,6 +555,9 @@ function animateBall(){
 
 function refreshScreen() {
     let field = scene.getObjectByName("field")
+    if(field == undefined || ball == undefined){
+        return
+    }
     let bbox = new THREE.Box3().setFromObject(field);
     let pos = ball.position
     if(
