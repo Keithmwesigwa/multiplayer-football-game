@@ -21,6 +21,13 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 let canvas = renderer.domElement;
 document.body.appendChild(canvas);
 
+let spotLight1 = new THREE.SpotLight( 0xffffff, 2 );
+
+let spotLight2 = new THREE.SpotLight( 0xffffff, 2 );
+
+scene.add(spotLight1)
+scene.add(spotLight2)
+
 scene.background = new THREE.Color(0xe5e5e5);
 
 let loader = new OBJLoader();
@@ -77,8 +84,8 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
 }
 
 loadMeshObj('./objects/football_field.obj', "field", 0x00ff00, 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
-loadMeshObj('./objects/football_player.obj', "player_1", 0x00ffff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.5,1.5,0]);
-loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.5,-1.5,0]);
+loadMeshObj('./objects/football_player.obj', "player_1", 0x00ffff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.57,1.57,0]);
+loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.57,-1.57,0]);
 loadMeshObj('./objects/sphere.obj', "ball", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
 loadMeshObj('./objects/teapot.obj', "teapot", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[-2,-4,0],[0,0,0],rockTexture);
 loadMeshObj('./objects/urn.obj', "urn", 0xffffff, 0.4,0.4,0.4, [0.3,0.3,0.3],[-2,4,0.3],[Math.PI/2,0,0],rockTexture);
@@ -140,15 +147,32 @@ function getBall(player,ball) {
 
 scene.addLight("l3")
 
-// let spotLight2 = new THREE.SpotLight( 0xffffff );
-
-
 const controls = new TrackballControls(camera, renderer.domElement)
 
 let dictionary_keys = {};
 
 function checkKeys()
 {
+    if(init == 1)
+    {   
+        let pos = player1.position;
+
+        spotLight1.position['x'] = pos['x']
+        spotLight1.position['y'] = pos['y']
+        spotLight1.position['z'] = pos['z']
+
+        spotLight1.target = sp_at_1;
+
+        pos = player2.position;
+
+        spotLight2.position['x'] = pos['x']
+        spotLight2.position['y'] = pos['y']
+        spotLight2.position['z'] = pos['z']
+
+        spotLight2.target = sp_at_2;
+
+    }
+
     for (const [key_pressed, value] of Object.entries(dictionary_keys))
     {
         // console.log(key_pressed + " " + value);
@@ -354,12 +378,11 @@ let ball
 scene.add(player_ball)
 let obstacles = [];
 
+let sp_at_1 = new THREE.Object3D();
+let sp_at_2 = new THREE.Object3D();
+
 let c = 0
-let spotLight1 = new THREE.SpotLight( 0xffffff );
-// spotLight1.rotation.set(0,Math.PI,0)
-// spotLight1.rotateOnAxis(new THREE.Vector3(0,1,0), 90*Math.PI/180);
-// spotLight1.rotateY(Math.PI/2)
-// scene.add(spotLight1)
+
 
 document.addEventListener('keydown', function (event)
 {
@@ -372,11 +395,13 @@ document.addEventListener('keydown', function (event)
         player1 = scene.getObjectByName("player_1");
         player2 = scene.getObjectByName("player_2")
         
-        // player1.add(spotLight1)
-        let meshPos = new THREE.Vector3()
-        // spotLight1.position['y']-=0.005
-        spotLight1.getWorldRotation(meshPos)
-        console.log(meshPos);
+        player1.add(sp_at_1)
+        sp_at_1.position['z'] += 1
+
+
+        player2.add(sp_at_2)
+        sp_at_2.position['z'] += 1
+        
 
         obstacles.push(scene.getObjectByName("sphere"))
         obstacles.push(scene.getObjectByName("teapot"))
@@ -426,24 +451,6 @@ document.addEventListener('keydown', function (event)
     else if(event.key == 'm')
     {
         flag = 2;
-    }
-
-    else if(event.key == '1'){
-        let meshPos = new THREE.Vector3()
-        spotLight1.position['z']+=0.005
-        spotLight1.getWorldPosition(meshPos)
-        // console.log(meshPos);
-    }
-
-    else if(event.key == '2'){
-        let meshPos = new THREE.Vector3()
-        spotLight1.position['z']-=0.005
-        spotLight1.getWorldPosition(meshPos)
-        // console.log(meshPos);
-    }
-
-    else if(event.key == '3'){
-        console.log(player2.position)
     }
 
     else if(event.key == 'f' && playerWithBall==player1) {
