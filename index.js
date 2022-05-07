@@ -22,8 +22,10 @@ let canvas = renderer.domElement;
 document.body.appendChild(canvas);
 
 let spotLight1 = new THREE.SpotLight( 0xffffff, 2 );
+spotLight1.visible = false;
 
 let spotLight2 = new THREE.SpotLight( 0xffffff, 2 );
+spotLight2.visible = false;
 
 scene.add(spotLight1)
 scene.add(spotLight2)
@@ -124,10 +126,22 @@ function getBall(player,ball) {
             if(player == player1){
                 playerWithBall = player1
                 player1.add(ball)
+                
+                sp_ball1.visible = true;
+                sp_ball1.target = ball;
+
+                sp_ball.visible = false;
+                sp_ball2.visible = false;
             } 
             else {
                 playerWithBall = player2
                 player2.add(ball)
+
+                sp_ball2.visible = true;
+                sp_ball2.target = ball;
+                
+                sp_ball.visible = false;
+                sp_ball1.visible = false;
             }
 
             // if(ball.parent == scene && animBall_kick) {
@@ -145,7 +159,7 @@ function getBall(player,ball) {
     
 }
 
-scene.addLight("l3")
+// scene.addLight("l3")
 
 const controls = new TrackballControls(camera, renderer.domElement)
 
@@ -171,6 +185,14 @@ function checkKeys()
 
         spotLight2.target = sp_at_2;
 
+        if(ball == undefined) {
+            return;
+        }
+
+        sp_ball1.target = ball;
+        sp_ball2.target = ball;
+        sp_ball.target = ball;
+
     }
 
     for (const [key_pressed, value] of Object.entries(dictionary_keys))
@@ -182,6 +204,18 @@ function checkKeys()
         /**
          * Player 1 controls
          */
+
+        // if(ball != undefined && ball.parent == player1) {
+        //     sp_ball1.target = ball;
+        // }
+
+        // else if(ball.parent == player2) {
+        //     sp_ball2.target = ball;
+        // }
+
+        // else if(ball.parent == scene) { 
+        //     sp_ball.target = ball;
+        // }
 
         if(key_pressed == "a")
         {
@@ -381,8 +415,18 @@ let obstacles = [];
 let sp_at_1 = new THREE.Object3D();
 let sp_at_2 = new THREE.Object3D();
 
-let c = 0
+let sp_ball = new THREE.SpotLight(0xffffff)
+sp_ball.visible = true;
 
+let sp_ball1 = new THREE.SpotLight(0xffffff)
+sp_ball1.visible = false;
+
+let sp_ball2 = new THREE.SpotLight(0xffffff)
+sp_ball2.visible = false;
+
+scene.add(sp_ball);
+scene.add(sp_ball1)
+scene.add(sp_ball2)
 
 document.addEventListener('keydown', function (event)
 {
@@ -398,10 +442,15 @@ document.addEventListener('keydown', function (event)
         player1.add(sp_at_1)
         sp_at_1.position['z'] += 1
 
-
         player2.add(sp_at_2)
         sp_at_2.position['z'] += 1
         
+        player1.add(sp_ball1);
+        console.log(sp_ball1);
+        sp_ball1.position.y = 1.5;
+
+        player2.add(sp_ball2);
+        sp_ball2.position.y = 1.5;
 
         obstacles.push(scene.getObjectByName("sphere"))
         obstacles.push(scene.getObjectByName("teapot"))
@@ -410,6 +459,9 @@ document.addEventListener('keydown', function (event)
 
         ball = scene.getObjectByName("ball")
         player_ball.add(ball)
+
+        sp_ball.position.set(ball.position.x,ball.position.y,1.5);
+        sp_ball.target = ball;
 
         let p1 = scene.getObjectByName("player_1");
         let pos1 = p1.position;
@@ -472,6 +524,12 @@ document.addEventListener('keydown', function (event)
         scene.add(ball)
         ball.position.set(meshPos.x,meshPos.y,meshPos.z)
         animBall_kick = true
+
+        sp_ball.visible = true
+        sp_ball.position.set(ball.position.x,ball.position.y,1.5)
+
+        sp_ball1.visible = false;
+        sp_ball2.visible = false;
     }
     else if(event.key == "h" && playerWithBall == player2) 
     {
@@ -480,6 +538,12 @@ document.addEventListener('keydown', function (event)
         scene.add(ball)
         ball.position.set(meshPos.x,meshPos.y,meshPos.z)
         animBall_kick = true
+
+        sp_ball.visible = true
+        sp_ball.position.set(ball.position.x,ball.position.y,1.5)
+
+        sp_ball1.visible = false;
+        sp_ball2.visible = false;
     }
 }, false);
 
@@ -505,9 +569,12 @@ function animateBall(){
     else if(animBall_kick) {
         if(playerWithBall == player1){
             ball.position['x'] += 0.1
+            // sp_ball.position['x'] += 0.1;
         } 
         else {
             ball.position['x'] -= 0.1
+            // sp_ball.position['x'] -= 0.1;
+
         }
         
         let pos = ball.position
@@ -531,6 +598,8 @@ function animateBall(){
             }
             
         }
+    sp_ball.position['x'] = ball.position['x']
+    sp_ball.position['y'] = ball.position['y']
     ball.rotateZ(0.1)
 
     }
@@ -558,23 +627,24 @@ function animateBall(){
         let del_x
         let slope = (finalBall_pos[1]-initBall_pos[1])/(finalBall_pos[0]-initBall_pos[0])
         if(finalBall_pos[0] > initBall_pos[0]) {
-            ball.position['x'] += 0.07
-            del_x = 0.07
+            ball.position['x'] += 0.06
+            del_x = 0.06
         } 
         
         else {
-            ball.position['x'] -= 0.07
-            del_x = -0.07
+            ball.position['x'] -= 0.06
+            del_x = -0.06
         }
 
         let del_y = slope * del_x
         ball.position['y'] += del_y 
+        sp_ball.position['x'] = ball.position['x']
+        sp_ball.position['y'] = ball.position['y']
+
         ball.rotateZ(0.1)
-
-
     }
 
-    else {
+    else { // if dribble
         if(incr){
             ball.position['z'] += 0.01
             count+=1
