@@ -22,10 +22,10 @@ let canvas = renderer.domElement;
 document.body.appendChild(canvas);
 
 let spotLight1 = new THREE.SpotLight( 0xffffff, 2 );
-spotLight1.visible = false;
+// spotLight1.visible = false;
 
 let spotLight2 = new THREE.SpotLight( 0xffffff, 2 );
-spotLight2.visible = false;
+// spotLight2.visible = false;
 
 scene.add(spotLight1)
 scene.add(spotLight2)
@@ -154,12 +154,24 @@ function getBall(player,ball) {
             animBall_kick = false;
             animBall_dribble = false;
             animBall_random = false;
+            ball.position.y+=0.22
+            ball.position.z+=0.2
         }
     console.log(player_ball)
     
 }
 
-// scene.addLight("l3")
+scene.addLight("l3", [-6.35,3.75,1]);
+scene.addLight("l4", [-6.35,-3.75,1]);
+scene.addLight("l5", [6.35,3.75,1]);
+scene.addLight("l6", [6.35,-3.75,1]);
+scene.addLight("l7", [0,4.1,1]);
+scene.addLight("l8", [0,-4.1,1]);
+
+scene.addLight("l9", [-14,0,1]);
+scene.addLight("l10", [14,0,1]);
+
+
 
 const controls = new TrackballControls(camera, renderer.domElement)
 
@@ -415,13 +427,13 @@ let obstacles = [];
 let sp_at_1 = new THREE.Object3D();
 let sp_at_2 = new THREE.Object3D();
 
-let sp_ball = new THREE.SpotLight(0xffffff)
+let sp_ball = new THREE.SpotLight(0xffffff,0.4)
 sp_ball.visible = true;
 
-let sp_ball1 = new THREE.SpotLight(0xffffff)
+let sp_ball1 = new THREE.SpotLight(0xffffff,0.4)
 sp_ball1.visible = false;
 
-let sp_ball2 = new THREE.SpotLight(0xffffff)
+let sp_ball2 = new THREE.SpotLight(0xffffff,0.4)
 sp_ball2.visible = false;
 
 scene.add(sp_ball);
@@ -544,6 +556,10 @@ document.addEventListener('keydown', function (event)
 
         sp_ball1.visible = false;
         sp_ball2.visible = false;
+    }
+
+    else if(event.key == "1") {
+        console.log(player1.position)
     }
 }, false);
 
