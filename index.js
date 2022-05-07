@@ -664,6 +664,7 @@ function animateBall(){
         ball.rotateZ(0.1)
     }
 }
+let gotOut = 0
 
 function refreshScreen() {
     let field = scene.getObjectByName("field")
@@ -678,7 +679,10 @@ function refreshScreen() {
         pos['y'] < bbox.min['y'] ||
         pos['y'] > bbox.max['y']
     ) {
-        window.location.reload();
+        if(gotOut==0){
+            window.location.reload();
+            gotOut+=1;
+        }
     }
 }
 
