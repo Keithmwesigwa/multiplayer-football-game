@@ -2,6 +2,7 @@ import * as THREE from 'three'
 // import {TrackballControls} from 'three/examples/jsm/controls/OrbitControls';
 
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
 import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
 import { TrackballControls } from 'TrackballControls'
 import { FirstPersonControls } from 'FirstPersonControls'
@@ -34,24 +35,55 @@ scene.background = new THREE.Color(0xe5e5e5);
 
 let loader = new OBJLoader();
 const textureLoader = new THREE.TextureLoader()
-const grassTexture = textureLoader.load( "images/Stylized_Grass.jpg" );
-const rockTexture = textureLoader.load( "images/stone.jpg" );
-const soccerTexture = textureLoader.load( "images/football.jpg" );
-grassTexture.wrapS = THREE.RepeatWrapping;
-grassTexture.wrapT = THREE.RepeatWrapping;
-rockTexture.wrapS = THREE.RepeatWrapping;
-rockTexture.wrapT = THREE.RepeatWrapping;
-function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , texture="NULL") {
+const grassTexture ="images/Stylized_Grass.jpg"
+const rockTexture = "images/stone.jpg"
+
+function loadObj(MTLFile,OBJFile,JPGFile,name,scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1]){
+    new MTLLoader()
+    .load(MTLFile, function (materials) {
+        materials.preload();
+        
+        new OBJLoader()
+            .setMaterials(materials)
+            .load(OBJFile, function (object) {
+                object.position.y = - 95;
+                var texture = textureLoader.load(JPGFile);
+    
+                object.traverse(function (child) {   // aka setTexture
+                    if (child instanceof THREE.Mesh) {
+                        child.material.map = texture;
+                    }
+                });
+                object.name = name;
+                object.position['x'] = pos[0]
+                object.position['y'] = pos[1]
+                object.position['z'] = pos[2]
+                object.scale['x'] = scale[0]
+                object.scale['y'] = scale[1]
+                object.scale['z'] = scale[2]
+                object.rotateX(rotate[0])
+                object.rotateY(rotate[1])
+                object.rotateZ(rotate[2])
+                scene.add(object);
+                scene.primitives += 1;
+            });
+    });
+}
+function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scale = [1,1,1], pos=[0,0,0], rotate=[1,1,1] , textureFile="NULL") {
 
     loader.load(
         // resource URL
         file,
         // called when resource is loaded
         function (object) {
+            var texture = textureLoader.load(textureFile);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            console.log(texture)
             object.traverse(function (obj) {
                 if (obj.isMesh) {
                     // obj.geometry.mergeVertices()
-                    if(texture === "NULL"){
+                    if(textureFile === "NULL"){
                         obj.material = new THREE.MeshLambertMaterial()
                     }
                     else{
@@ -61,9 +93,8 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
                             }
                         )
                     }
-                    // console.log(Scene)
-                    scene.setMaterialProperties(obj.material,ka,kd,ks)
                     obj.material.color.setHex(objColor);
+                    scene.setMaterialProperties(obj.material,ka,kd,ks)
                 }
             });
 
@@ -88,10 +119,12 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
 loadMeshObj('./objects/football_field.obj', "field", 0x00ff00, 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
 loadMeshObj('./objects/football_player.obj', "player_1", 0x00ffff, 0.4,0.4,0.4, [1,1,1],[-1,0,0],[1.57,1.57,0]);
 loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.57,-1.57,0]);
-loadMeshObj('./objects/sphere.obj', "ball", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0],soccerTexture);
-loadMeshObj('./objects/teapot.obj', "teapot", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[-2,-4,0],[0,0,0],rockTexture);
-loadMeshObj('./objects/urn.obj', "urn", 0xffffff, 0.4,0.4,0.4, [0.3,0.3,0.3],[-2,4,0.3],[Math.PI/2,0,0],rockTexture);
-loadMeshObj('./objects/canstick.obj', "canstick", 0xffffff, 0.4,0.4,0.4, [5,5,5],[2,4,0.5],[Math.PI/2,0,0],rockTexture);
+
+loadObj('./objects/football.mtl','./objects/football.obj','./images/football.jpg',"ball",[0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0])
+loadObj('./objects/buggati.mtl','./objects/buggati.obj','',"buggati",[0.2,0.2,0.2],[2,4,0],[1.5,-1.5,0])
+loadObj('./objects/urn.mtl','./objects/urn.obj','./objects/urn.jpg',"urn",[0.02,0.02,0.02],[-2,4,0],[0,0,0])
+loadMeshObj('./objects/OldTeapot.obj', "teapot", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[-2,-4,0.7],[Math.PI/2,0,0],"./objects/old.jpg");
+
 loadMeshObj('./objects/sphere.obj', "sphere", 0xffffff, 0.4,0.4,0.4, [0.4,0.4,0.4],[2,-4,0.4],[Math.PI/2,0,0],rockTexture);
 loadMeshObj('./objects/goal.obj', "goal_1" , 0x000000, 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
 loadMeshObj('./objects/goal.obj', "goal_2", 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-11.2,-3.5,0.36],[-0,0,Math.PI/2]);
