@@ -39,7 +39,6 @@ function loadObj(MTLFile,OBJFile,JPGFile,name,scale = [1,1,1], pos=[0,0,0], rota
         new OBJLoader()
             .setMaterials(materials)
             .load(OBJFile, function (object) {
-                object.position.y = - 95;
                 var texture = textureLoader.load(JPGFile);
     
                 object.traverse(function (child) {   // aka setTexture
