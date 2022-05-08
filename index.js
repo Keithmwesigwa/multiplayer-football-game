@@ -16,10 +16,10 @@ let canvas = renderer.domElement;
 document.body.appendChild(canvas);
 
 let spotLight1 = new THREE.SpotLight( 0xffffff, 2 );
-// spotLight1.visible = false;
+spotLight1.visible = false;
 
 let spotLight2 = new THREE.SpotLight( 0xffffff, 2 );
-// spotLight2.visible = false;
+spotLight2.visible = false;
 
 scene.add(spotLight1)
 scene.add(spotLight2)
@@ -75,7 +75,6 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
             console.log(texture)
             object.traverse(function (obj) {
                 if (obj.isMesh) {
-                    // obj.geometry.mergeVertices()
                     if(textureFile === "NULL"){
                         obj.material = new THREE.MeshLambertMaterial()
                     }
@@ -106,7 +105,6 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
             scene.primitives += 1;
         },
     );
-    // scene.primitives += 1;
 }
 
 loadMeshObj('./objects/football_field.obj', "field", 0x00ff00, 0.4,0.4,0.4, [0.4,0.4,0.4],[0,0,0],[Math.PI/2,Math.PI/2,0], grassTexture);
@@ -152,22 +150,10 @@ function getBall(player,ball) {
             if(player == player1){
                 playerWithBall = player1
                 player1.add(ball)
-                
-                sp_ball1.visible = true;
-                sp_ball1.target = ball;
-
-                sp_ball.visible = false;
-                sp_ball2.visible = false;
             } 
             else {
                 playerWithBall = player2
                 player2.add(ball)
-
-                sp_ball2.visible = true;
-                sp_ball2.target = ball;
-                
-                sp_ball.visible = false;
-                sp_ball1.visible = false;
             }
 
             ball.worldToLocal(ballPos)
@@ -182,15 +168,15 @@ function getBall(player,ball) {
     
 }
 
-scene.addLight("l3", [-6.35,3.75,1]);
-scene.addLight("l4", [-6.35,-3.75,1]);
-scene.addLight("l5", [6.35,3.75,1]);
-scene.addLight("l6", [6.35,-3.75,1]);
-scene.addLight("l7", [0,4.1,1]);
-scene.addLight("l8", [0,-4.1,1]);
+// scene.addLight("l3", [-6.35,3.75,1]);
+// scene.addLight("l4", [-6.35,-3.75,1]);
+// scene.addLight("l5", [6.35,3.75,1]);
+// scene.addLight("l6", [6.35,-3.75,1]);
+// scene.addLight("l7", [0,4.1,1]);
+// scene.addLight("l8", [0,-4.1,1]);
 
-scene.addLight("l9", [-14,0,1]);
-scene.addLight("l10", [14,0,1]);
+// scene.addLight("l9", [-14,0,1]);
+// scene.addLight("l10", [14,0,1]);
 
 
 
@@ -222,8 +208,6 @@ function checkKeys()
             return;
         }
 
-        sp_ball1.target = ball;
-        sp_ball2.target = ball;
         sp_ball.target = ball;
 
     }
@@ -436,18 +420,11 @@ let obstacles = [];
 let sp_at_1 = new THREE.Object3D();
 let sp_at_2 = new THREE.Object3D();
 
-let sp_ball = new THREE.SpotLight(0xffffff,0.4)
+let sp_ball = new THREE.SpotLight(0xffffff,1)
+sp_ball.position.set(0,0,4)
 sp_ball.visible = true;
 
-let sp_ball1 = new THREE.SpotLight(0xffffff,0.4)
-sp_ball1.visible = false;
-
-let sp_ball2 = new THREE.SpotLight(0xffffff,0.4)
-sp_ball2.visible = false;
-
 scene.add(sp_ball);
-scene.add(sp_ball1)
-scene.add(sp_ball2)
 
 document.addEventListener('keydown', function (event)
 {
@@ -465,13 +442,6 @@ document.addEventListener('keydown', function (event)
 
         player2.add(sp_at_2)
         sp_at_2.position['z'] += 1
-        
-        player1.add(sp_ball1);
-        console.log(sp_ball1);
-        sp_ball1.position.y = 1.5;
-
-        player2.add(sp_ball2);
-        sp_ball2.position.y = 1.5;
 
         obstacles.push(scene.getObjectByName("sphere"))
         obstacles.push(scene.getObjectByName("teapot"))
@@ -481,7 +451,6 @@ document.addEventListener('keydown', function (event)
         ball = scene.getObjectByName("ball")
         player_ball.add(ball)
 
-        sp_ball.position.set(ball.position.x,ball.position.y,1.5);
         sp_ball.target = ball;
 
         let p1 = scene.getObjectByName("player_1");
@@ -545,12 +514,6 @@ document.addEventListener('keydown', function (event)
         scene.add(ball)
         ball.position.set(meshPos.x,meshPos.y,meshPos.z)
         animBall_kick = true
-
-        sp_ball.visible = true
-        sp_ball.position.set(ball.position.x,ball.position.y,1.5)
-
-        sp_ball1.visible = false;
-        sp_ball2.visible = false;
     }
     else if(event.key == "h" && playerWithBall == player2) 
     {
@@ -559,12 +522,6 @@ document.addEventListener('keydown', function (event)
         scene.add(ball)
         ball.position.set(meshPos.x,meshPos.y,meshPos.z)
         animBall_kick = true
-
-        sp_ball.visible = true
-        sp_ball.position.set(ball.position.x,ball.position.y,1.5)
-
-        sp_ball1.visible = false;
-        sp_ball2.visible = false;
     }
 
     else if(event.key == "1") {
@@ -620,8 +577,6 @@ function animateBall(){
             }
             
         }
-    sp_ball.position['x'] = ball.position['x']
-    sp_ball.position['y'] = ball.position['y']
     ball.rotateZ(0.1)
 
     }
@@ -659,9 +614,7 @@ function animateBall(){
 
         let del_y = slope * del_x
         ball.position['y'] += del_y 
-        sp_ball.position['x'] = ball.position['x']
-        sp_ball.position['y'] = ball.position['y']
-
+        
         ball.rotateZ(0.1)
     }
 
