@@ -72,7 +72,6 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
             var texture = textureLoader.load(textureFile);
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
-            console.log(texture)
             object.traverse(function (obj) {
                 if (obj.isMesh) {
                     if(textureFile === "NULL"){
@@ -100,6 +99,16 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
             object.rotateX(rotate[0])
             object.rotateY(rotate[1])
             object.rotateZ(rotate[2])
+
+            if(name == "player_1") {
+                object.position.x = (Math.random() * 6.2)-6.2;
+                object.position.y =  (Math.random() * 3.6)-1.8;
+            }
+
+            else if(name == "player_2") {
+                object.position.x = (Math.random() * 6.2);
+                object.position.y =  (Math.random() * 3.6)-1.8;
+            }
 
             scene.add(object)
             scene.primitives += 1;
@@ -164,8 +173,6 @@ function getBall(player,ball) {
             ball.position.y+=0.22
             ball.position.z+=0.2
         }
-    console.log(player_ball)
-    
 }
 
 scene.addLight("l3", [-6.35,3.75,1]);
@@ -575,6 +582,10 @@ document.addEventListener('keydown', function (event)
         }
     }
 
+    else if(event.key == "2"){
+        console.log(player1.position)
+    }
+
     else if(Number.isInteger(Number(event.key)) && Number(event.key)>2) {
         lightMode = Number(event.key)-3
     }
@@ -748,7 +759,6 @@ function refreshScreen() {
     }
     let bbox = new THREE.Box3().setFromObject(field);
     let pos = ball.position
-    console.log(ball.position);
     if(
         pos['x'] < bbox.min['x'] ||
         pos['x'] > bbox.max['x'] ||
