@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
-import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
+import { Camera, Scene, Renderer } from './lib/threeD.js';
 import { TrackballControls } from 'TrackballControls'
 
 let camera = new Camera()
