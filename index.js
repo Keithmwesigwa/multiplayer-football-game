@@ -1,16 +1,9 @@
 import * as THREE from 'three'
-// import {TrackballControls} from 'three/examples/jsm/controls/OrbitControls';
 
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
 import { Camera, Scene, Renderer, Shape } from './lib/threeD.js';
 import { TrackballControls } from 'TrackballControls'
-import { FirstPersonControls } from 'FirstPersonControls'
-// import { TrackballControls } from './lib/trackball.js'
-// import TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';
-// import { TrackballControls } from 'https://unpkg.com/browse/three@0.92.0/examples/js/controls/TrackballControls.js';
-// import TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';
-// import structuredClone from "@ungap/structuredimport TrackballControls from 'https://cdn.jsdelivr.net/npm/three-trackballcontrols@0.0.8/index.min.js';-clone"
 
 let camera = new Camera()
 camera.position.z = 8;
@@ -121,11 +114,11 @@ loadMeshObj('./objects/football_player.obj', "player_1", 0x00ffff, 0.4,0.4,0.4, 
 loadMeshObj('./objects/football_player.obj', "player_2", 0x0000ff, 0.4,0.4,0.4, [1,1,1],[1,0,0],[1.57,-1.57,0]);
 
 loadObj('./objects/football.mtl','./objects/football.obj','./images/football.jpg',"ball",[0.2,0.2,0.2],[0,0,0.22],[1.5,-1.5,0])
-loadObj('./objects/buggati.mtl','./objects/buggati.obj','',"buggati",[0.2,0.2,0.2],[2,4,0],[1.5,-1.5,0])
-loadObj('./objects/urn.mtl','./objects/urn.obj','./objects/urn.jpg',"urn",[0.02,0.02,0.02],[-2,4,0],[0,0,0])
+loadObj('./objects/buggati.mtl','./objects/buggati.obj','',"buggati",[0.2,0.2,0.2],[3,4,0],[1.5,-1.5,0])
+loadObj('./objects/urn.mtl','./objects/urn.obj','./objects/urn.jpg',"urn",[0.02,0.02,0.02],[-3,3,0],[0,0,0])
 loadMeshObj('./objects/OldTeapot.obj', "teapot", 0xffffff, 0.4,0.4,0.4, [0.2,0.2,0.2],[-2,-4,0.7],[Math.PI/2,0,0],"./objects/old.jpg");
 
-loadMeshObj('./objects/sphere.obj', "sphere", 0xffffff, 0.4,0.4,0.4, [0.4,0.4,0.4],[2,-4,0.4],[Math.PI/2,0,0],rockTexture);
+loadMeshObj('./objects/sphere.obj', "sphere", 0xffffff, 0.4,0.4,0.4, [0.4,0.4,0.4],[3,-3,0.4],[Math.PI/2,0,0],rockTexture);
 loadMeshObj('./objects/goal.obj', "goal_1" , 0x000000, 0.4,0.4,0.4, [3.2,1,1],[11.4,-3.5,0.05],[Math.PI/2,Math.PI/2,0]);
 loadMeshObj('./objects/goal.obj', "goal_2", 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-11.2,-3.5,0.36],[-0,0,Math.PI/2]);
 
@@ -177,11 +170,6 @@ function getBall(player,ball) {
                 sp_ball1.visible = false;
             }
 
-            // if(ball.parent == scene && animBall_kick) {
-            //     ball.worldToLocal(ballPos)
-            //     ball.position.set(ballPos.x,ballPos.y,ballPos.z)
-            //     animBall_kick = false;
-            // }
             ball.worldToLocal(ballPos)
             ball.position.set(ballPos.x,ballPos.y,ballPos.z)
             animBall_kick = false;
@@ -249,18 +237,6 @@ function checkKeys()
         /**
          * Player 1 controls
          */
-
-        // if(ball != undefined && ball.parent == player1) {
-        //     sp_ball1.target = ball;
-        // }
-
-        // else if(ball.parent == player2) {
-        //     sp_ball2.target = ball;
-        // }
-
-        // else if(ball.parent == scene) { 
-        //     sp_ball.target = ball;
-        // }
 
         if(key_pressed == "a")
         {
@@ -618,12 +594,9 @@ function animateBall(){
     else if(animBall_kick) {
         if(playerWithBall == player1){
             ball.position['x'] += 0.1
-            // sp_ball.position['x'] += 0.1;
         } 
         else {
             ball.position['x'] -= 0.1
-            // sp_ball.position['x'] -= 0.1;
-
         }
         
         let pos = ball.position
@@ -669,7 +642,6 @@ function animateBall(){
                 if(finalBall_pos[0] == initBall_pos[0]) {
                     finalBall_pos[0] += 0.1;
                 }
-                // return
             }
         }
 
