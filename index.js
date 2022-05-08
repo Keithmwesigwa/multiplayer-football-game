@@ -500,7 +500,7 @@ document.addEventListener('keydown', function (event)
         obstacles.push(scene.getObjectByName("sphere"))
         obstacles.push(scene.getObjectByName("teapot"))
         obstacles.push(scene.getObjectByName("urn"))
-        obstacles.push(scene.getObjectByName("canstick"))
+        obstacles.push(scene.getObjectByName("buggati"))
 
         ball = scene.getObjectByName("ball")
         player_ball.add(ball)
@@ -722,6 +722,7 @@ function refreshScreen() {
     }
     let bbox = new THREE.Box3().setFromObject(field);
     let pos = ball.position
+    console.log(ball.position);
     if(
         pos['x'] < bbox.min['x'] ||
         pos['x'] > bbox.max['x'] ||
@@ -747,6 +748,5 @@ function animate() {
     checkKeys();
     animateBall();
     refreshScreen();
-
 }
 animate();
