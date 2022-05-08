@@ -16,10 +16,10 @@ let canvas = renderer.domElement;
 document.body.appendChild(canvas);
 
 let spotLight1 = new THREE.SpotLight( 0xffffff, 2 );
-spotLight1.visible = false;
+// spotLight1.visible = true;
 
 let spotLight2 = new THREE.SpotLight( 0xffffff, 2 );
-spotLight2.visible = false;
+// spotLight2.visible = true;
 
 scene.add(spotLight1)
 scene.add(spotLight2)
@@ -168,15 +168,15 @@ function getBall(player,ball) {
     
 }
 
-// scene.addLight("l3", [-6.35,3.75,1]);
-// scene.addLight("l4", [-6.35,-3.75,1]);
-// scene.addLight("l5", [6.35,3.75,1]);
-// scene.addLight("l6", [6.35,-3.75,1]);
-// scene.addLight("l7", [0,4.1,1]);
-// scene.addLight("l8", [0,-4.1,1]);
+scene.addLight("l3", [-6.35,3.75,1]);
+scene.addLight("l4", [-6.35,-3.75,1]);
+scene.addLight("l5", [6.35,3.75,1]);
+scene.addLight("l6", [6.35,-3.75,1]);
+scene.addLight("l7", [0,4.1,1]);
+scene.addLight("l8", [0,-4.1,1]);
 
-// scene.addLight("l9", [-14,0,1]);
-// scene.addLight("l10", [14,0,1]);
+scene.addLight("l9", [-14,0,1]);
+scene.addLight("l10", [14,0,1]);
 
 
 
@@ -420,11 +420,14 @@ let obstacles = [];
 let sp_at_1 = new THREE.Object3D();
 let sp_at_2 = new THREE.Object3D();
 
-let sp_ball = new THREE.SpotLight(0xffffff,1)
+let sp_ball = new THREE.SpotLight(0xffffff,0.7)
 sp_ball.position.set(0,0,4)
 sp_ball.visible = true;
 
 scene.add(sp_ball);
+
+let lightModes = ["streetLights", "searchLight", "sp_p1", "sp_p2"]
+let lightMode = 0
 
 document.addEventListener('keydown', function (event)
 {
@@ -524,9 +527,107 @@ document.addEventListener('keydown', function (event)
         animBall_kick = true
     }
 
-    else if(event.key == "1") {
-        console.log(player1.position)
+    else if(event.key == "0") {
+        if(lightModes[lightMode] == "streetLights") {
+            scene.getObjectByName("l3").visible = false;
+            scene.getObjectByName("l4").visible = false;
+            scene.getObjectByName("l5").visible = false;
+            scene.getObjectByName("l6").visible = false;
+            scene.getObjectByName("l7").visible = false;
+            scene.getObjectByName("l8").visible = false;
+            scene.getObjectByName("l9").visible = false;
+            scene.getObjectByName("l10").visible = false;
+        }
+        else if(lightModes[lightMode] == "searchLight") {
+            sp_ball.visible = false;
+        }
+
+        else if(lightModes[lightMode] == "sp_p1") {
+            spotLight1.visible = false; 
+        }
+
+        else if(lightModes[lightMode] == "sp_p2") {
+            spotLight2.visible = false;
+        }
     }
+
+    else if(event.key == "1") {
+        if(lightModes[lightMode] == "streetLights") {
+            scene.getObjectByName("l3").visible = true;
+            scene.getObjectByName("l4").visible = true;
+            scene.getObjectByName("l5").visible = true;
+            scene.getObjectByName("l6").visible = true;
+            scene.getObjectByName("l7").visible = true;
+            scene.getObjectByName("l8").visible = true;
+            scene.getObjectByName("l9").visible = true;
+            scene.getObjectByName("l10").visible = true;
+        }
+        else if(lightModes[lightMode] == "searchLight") {
+            sp_ball.visible = true;
+        }
+
+        else if(lightModes[lightMode] == "sp_p1") {
+            spotLight1.visible = true; 
+        }
+
+        else if(lightModes[lightMode] == "sp_p2") {
+            spotLight2.visible = true;
+        }
+    }
+
+    else if(Number.isInteger(Number(event.key)) && Number(event.key)>2) {
+        lightMode = Number(event.key)-3
+    }
+
+    else if(event.key == "+") {
+        if(lightModes[lightMode] == "streetLights") {
+            scene.getObjectByName("l3").intensity += 0.05;
+            scene.getObjectByName("l4").intensity += 0.05;
+            scene.getObjectByName("l5").intensity += 0.05;
+            scene.getObjectByName("l6").intensity += 0.05;
+            scene.getObjectByName("l7").intensity += 0.05;
+            scene.getObjectByName("l8").intensity += 0.05;
+            scene.getObjectByName("l9").intensity += 0.05;
+            scene.getObjectByName("l10").intensity += 0.05;
+        }
+        else if(lightModes[lightMode] == "searchLight") {
+            sp_ball.intensity += 0.05;
+        }
+
+        else if(lightModes[lightMode] == "sp_p1") {
+            spotLight1.intensity += 0.05; 
+        }
+
+        else if(lightModes[lightMode] == "sp_p2") {
+            spotLight2.intensity += 0.05;
+        }
+    }
+
+    else if(event.key == "-") {
+        if(lightModes[lightMode] == "streetLights") {
+            scene.getObjectByName("l3").intensity -= 0.05;
+            scene.getObjectByName("l4").intensity -= 0.05;
+            scene.getObjectByName("l5").intensity -= 0.05;
+            scene.getObjectByName("l6").intensity -= 0.05;
+            scene.getObjectByName("l7").intensity -= 0.05;
+            scene.getObjectByName("l8").intensity -= 0.05;
+            scene.getObjectByName("l9").intensity -= 0.05;
+            scene.getObjectByName("l10").intensity -= 0.05;
+        }
+        else if(lightModes[lightMode] == "searchLight") {
+            sp_ball.intensity -= 0.05;
+        }
+
+        else if(lightModes[lightMode] == "sp_p1") {
+            spotLight1.intensity -= 0.05; 
+        }
+
+        else if(lightModes[lightMode] == "sp_p2") {
+            spotLight2.intensity -= 0.05;
+        }
+    }
+    
+
 }, false);
 
 document.addEventListener('keyup', function (event)
