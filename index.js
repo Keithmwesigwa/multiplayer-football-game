@@ -57,7 +57,6 @@ function loadObj(MTLFile,OBJFile,JPGFile,name,scale = [1,1,1], pos=[0,0,0], rota
                 object.rotateY(rotate[1])
                 object.rotateZ(rotate[2])
                 scene.add(object);
-                scene.primitives += 1;
             });
     });
 }
@@ -110,7 +109,6 @@ function loadMeshObj(file, name, objColor=0xffffff, ka=0.4, kd=0.4, ks=0.4, scal
             }
 
             scene.add(object)
-            scene.primitives += 1;
         },
     );
 }
@@ -130,7 +128,6 @@ loadMeshObj('./objects/goal.obj', "goal_2", 0x000000, 0.4,0.4,0.4, [3.2,1,1],[-1
 
 const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
 const points = [];
-points.push( new THREE.Vector3( 0, 0, 0 ) );
 points.push( new THREE.Vector3( 0, 4, 0 ) );
 points.push( new THREE.Vector3( 0, -4, 0 ) );
 
@@ -188,6 +185,8 @@ scene.addLight("l10", [14,0,1]);
 
 const controls = new TrackballControls(camera, renderer.domElement)
 
+
+// start from here
 let dictionary_keys = {};
 
 function checkKeys()
@@ -416,11 +415,9 @@ let flag = 0;
 let camera_player_1 = new Camera();
 let camera_player_2 = new Camera();
 let init = 0;
-let player_ball = new THREE.Group();
 let player1
 let player2
 let ball
-scene.add(player_ball)
 let obstacles = [];
 
 let sp_at_1 = new THREE.Object3D();
@@ -437,6 +434,10 @@ let lightMode = 0
 
 document.addEventListener('keydown', function (event)
 {
+    // {
+    //        "q":true;
+    //        "p":true;
+    // }
 
     dictionary_keys[event.key] = true;
     if(init == 0)
@@ -458,7 +459,6 @@ document.addEventListener('keydown', function (event)
         obstacles.push(scene.getObjectByName("buggati"))
 
         ball = scene.getObjectByName("ball")
-        player_ball.add(ball)
 
         sp_ball.target = ball;
 
